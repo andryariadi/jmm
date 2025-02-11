@@ -1,8 +1,10 @@
 import { formatCurrency } from "@/libs/utility";
 import Image from "next/image";
+import Link from "next/link";
 import { IoIosCart } from "react-icons/io";
 
 type ProductProps = {
+  id: number;
   name: string;
   price: number;
   stock: number;
@@ -30,9 +32,9 @@ const ProductCard = ({ product }: { product: ProductProps }) => {
       </div>
 
       <div className="bg-bgrd min-h-[18rem] p-2 flex items-center justify-center rounded-tr-[30px] overflow-hidden">
-        <div className="b-amber-600 relative w-full min-h-[18rem]">
-          <Image src={product.image} alt={product.name} fill className={` object-cover rounded-tr-[22px] rounded-md`} />
-        </div>
+        <Link href={`/product/${product.id}`} className="b-amber-600 relative w-full min-h-[18rem] overflow-hidden rounded-tr-[22px] rounded-md">
+          <Image src={product.image} alt={product.name} fill className={` object-cover rounded-tr-[22px] rounded-md hover:scale-125 transition-all duration-300`} />
+        </Link>
       </div>
 
       <div className="info bg-bgrd text-center px-10 pt-1">
