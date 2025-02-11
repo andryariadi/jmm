@@ -3,7 +3,6 @@ import { create } from "zustand";
 import { toastStyle } from "../utility";
 import axios from "axios";
 
-// Define types for the product
 interface Product {
   id: number;
   name: string;
@@ -15,13 +14,17 @@ interface Product {
   image: string;
 }
 
-interface OrderItems {
-  items: Product[];
+interface OrderItem {
+  product_id: number;
+  quantity: number;
+}
+
+interface OrderData {
+  items: OrderItem[];
   total_item: number;
   total_price: number;
 }
 
-// Define types for the cart state
 interface CartState {
   cart: Product[];
   total: number;
@@ -31,7 +34,7 @@ interface CartState {
   removeFromCart: (productId: number) => void;
   calculateTotals: () => void;
   clearCart: () => void;
-  order?: OrderItems[];
+  order: OrderData[];
   checkout: () => void;
 }
 
@@ -52,14 +55,14 @@ const loadCartFromLocalStorage = (): Product[] => {
 };
 
 // Helper function to save order to localStorage
-const saveOrderToLocalStorage = (order: OrderItems[]) => {
+const saveOrderToLocalStorage = (order: OrderData[]) => {
   if (typeof window !== "undefined") {
     localStorage.setItem("order", JSON.stringify(order));
   }
 };
 
 // Helper function to load cart from localStorage
-const loadOrderFromLocalStorage = (): OrderItems[] => {
+const loadOrderFromLocalStorage = (): OrderData[] => {
   if (typeof window !== "undefined") {
     const order = localStorage.getItem("order");
     return order ? JSON.parse(order) : [];
@@ -67,7 +70,6 @@ const loadOrderFromLocalStorage = (): OrderItems[] => {
   return []; // Return empty array if running on the server
 };
 
-// Create the store with types
 export const useCartStore = create<CartState>((set, get) => ({
   cart: typeof window !== "undefined" ? loadCartFromLocalStorage() : [], // Load cart from localStorage only on the client
   total: 0,
@@ -78,7 +80,6 @@ export const useCartStore = create<CartState>((set, get) => ({
     try {
       const { cart } = get();
 
-      // Siapkan data untuk dikirim ke API
       const payload = {
         items: cart.map((item) => ({
           product_id: item.id,
@@ -88,27 +89,29 @@ export const useCartStore = create<CartState>((set, get) => ({
         total_price: cart.reduce((total, item) => total + item.price * item.quantity, 0),
       };
 
-      // Kirim data ke API
-      const response = await axios.post("https://fe-test-api.jmm88.com/api/orders", payload);
+      const res = await axios.post("https://fe-test-api.jmm88.com/api/orders", payload);
 
-      // Tangani respons sukses
-      if (response.data.status === 200) {
-        toast.success(response.data.message); // Tampilkan pesan sukses
+      console.log({ res }, "<----checkoutStore");
 
-        saveOrderToLocalStorage(response.data);
+      if (res.data.status === 200) {
+        toast.success(res.data.message, {
+          style: toastStyle,
+        });
 
-        set({ cart: [], total: 0, subtotal: 0, order: response.data.data }); // Kosongkan keranjang
+        saveOrderToLocalStorage(res.data.data);
+
+        set({ cart: [], total: 0, subtotal: 0, order: res.data.data });
 
         localStorage.removeItem("cart");
       }
     } catch (error) {
-      // Tangani error
       console.error("Checkout failed:", error);
-      toast.error("Checkout failed. Please try again.");
+      toast.error("Checkout failed. Please try again", {
+        style: toastStyle,
+      });
     }
   },
 
-  // Menambahkan produk ke keranjang
   addToCart: (product) => {
     set((prevState) => {
       const existingItem = prevState.cart.find((item) => item.id === product.id);
@@ -121,7 +124,6 @@ export const useCartStore = create<CartState>((set, get) => ({
 
       toast.success("Product added to cart successfully!", {
         style: toastStyle,
-        position: "bottom-right",
       });
 
       return { cart: newCart };
@@ -130,7 +132,6 @@ export const useCartStore = create<CartState>((set, get) => ({
     get().calculateTotals();
   },
 
-  // Mengupdate jumlah produk di keranjang
   updateQuantity: (productId, quantity, stock) => {
     set((prevState) => {
       console.log({ quantity, stock }, "<-----updateQuantity");
@@ -149,7 +150,6 @@ export const useCartStore = create<CartState>((set, get) => ({
     get().calculateTotals();
   },
 
-  // Menghapus produk dari keranjang
   removeFromCart: (productId) => {
     set((prevState) => {
       const newCart = prevState.cart.filter((item) => item.id !== productId);
@@ -164,7 +164,6 @@ export const useCartStore = create<CartState>((set, get) => ({
     });
   },
 
-  // Menghitung total dan subtotal
   calculateTotals: () => {
     const { cart } = get();
 
@@ -174,7 +173,6 @@ export const useCartStore = create<CartState>((set, get) => ({
     set({ subtotal, total });
   },
 
-  // Mengosongkan keranjang
   clearCart: () => {
     set({ cart: [], total: 0, subtotal: 0 });
     saveCartToLocalStorage([]); // Clear cart in localStorage

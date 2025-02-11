@@ -28,14 +28,12 @@ export async function getProductById({ productId }: { productId?: string }) {
   }
 }
 
-// export const searchProduct = async (query: string) => {
-//   try {
-//     const res = await axios.get(`https://fe-test-api.jmm88.com/api/products?search=${query}`);
+export async function getOrderById({ orderId }: { orderId?: string }) {
+  try {
+    const res = await axios.get(`https://fe-test-api.jmm88.com/api/orders/${orderId}`);
 
-//     console.log(res.data, "<---searchProductServer");
-
-//     return res.data;
-//   } catch (error) {
-//     console.log(error, "<---errorSearchProduct");
-//   }
-// };
+    return res.data;
+  } catch (error) {
+    console.log(error, "<---errorGetProducts");
+  }
+}
