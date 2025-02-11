@@ -48,9 +48,9 @@ body {
   font-size: medium;
 }
 
-@container style(--isT-shirts:true) {
+@container style(--isElectronics:true) {
   .card::after {
-    content: url("/tshirt.png");
+    content: url("/electronic.png");
   }
 
   .card .more {
@@ -58,63 +58,13 @@ body {
   }
 }
 
-@container style(--isJeans:true) {
+@container style(--isFurniture:true) {
   .card::after {
-    content: url("/jeans.png");
+    content: url("/furniture.png");
   }
 
   .card .more {
     box-shadow: 0 7px 0 cadetblue;
-  }
-}
-
-@container style(--isShoes:true) {
-  .card::after {
-    content: url("/shoes.png");
-  }
-
-  .card .more {
-    box-shadow: 0 7px 0 burlywood;
-  }
-}
-
-@container style(--isGlasses:true) {
-  .card::after {
-    content: url("/sunglasses.png");
-  }
-
-  .card .more {
-    box-shadow: 0 7px 0 darkolivegreen;
-  }
-}
-
-@container style(--isJackets:true) {
-  .card::after {
-    content: url("/jacket.png");
-  }
-
-  .card .more {
-    box-shadow: 0 7px 0 hotpink;
-  }
-}
-
-@container style(--isSuits:true) {
-  .card::after {
-    content: url("/suit.png");
-  }
-
-  .card .more {
-    box-shadow: 0 7px 0 indianred;
-  }
-}
-
-@container style(--isBags:true) {
-  .card::after {
-    content: url("/bags.png");
-  }
-
-  .card .more {
-    box-shadow: 0 7px 0 khaki;
   }
 }
 
