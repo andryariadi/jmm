@@ -4,15 +4,12 @@ import { motion } from "framer-motion";
 import { IoIosArrowRoundForward } from "react-icons/io";
 import { useCartStore } from "@/libs/stores/useCartStore";
 import Link from "next/link";
+import { formatCurrency } from "@/libs/utility";
 
 const OrderSummary = () => {
   const { total, subtotal } = useCartStore();
 
   const savings = subtotal - total;
-
-  const formattedTotal = total.toFixed(2);
-  const formattedSubtotal = subtotal.toFixed(2);
-  const formattedSavings = savings.toFixed(2);
 
   console.log({ savings }, "<---disavings");
 
@@ -28,13 +25,13 @@ const OrderSummary = () => {
           <div className="flex flex-col gap-2 py-3 border-b border-gray-700 text-gray-400 text-base">
             <div className="flex items-center justify-between w-full">
               <span className="text-gray-400">Original price</span>
-              <span className="text-white">${formattedSubtotal}</span>
+              <span className="text-white">${formatCurrency(subtotal)}</span>
             </div>
 
             {savings > 0 && (
               <dl className="flex items-center justify-between gap-4">
                 <dt>Savings</dt>
-                <dd className="text-base font-medium text-rose-500">-${formattedSavings}</dd>
+                <dd className="text-base font-medium text-rose-500">-${formatCurrency(savings)}</dd>
               </dl>
             )}
           </div>
@@ -42,7 +39,7 @@ const OrderSummary = () => {
           {/* Total Price */}
           <div className="flex items-center justify-between py-3">
             <span>Total</span>
-            <span className="text-emerald-400">${formattedTotal}</span>
+            <span className="text-emerald-400">${formatCurrency(total)}</span>
           </div>
         </div>
 
