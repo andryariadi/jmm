@@ -5,13 +5,20 @@ import { IoIosArrowRoundForward } from "react-icons/io";
 import { useCartStore } from "@/libs/stores/useCartStore";
 import Link from "next/link";
 import { formatCurrency } from "@/libs/utility";
+import { useRouter } from "next/navigation";
 
 const OrderSummary = () => {
-  const { total, subtotal } = useCartStore();
+  const router = useRouter();
 
-  const savings = subtotal - total;
+  const { total, subtotal, checkout } = useCartStore();
 
-  console.log({ savings }, "<---disavings");
+  const handleCheckOut = () => {
+    checkout();
+
+    router.push("/order");
+  };
+
+  console.log({ total, subtotal }, "<---disavings");
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="b-green-800 space-y-5 w-full max-w-md">
@@ -25,21 +32,14 @@ const OrderSummary = () => {
           <div className="flex flex-col gap-2 py-3 border-b border-gray-700 text-gray-400 text-base">
             <div className="flex items-center justify-between w-full">
               <span className="text-gray-400">Original price</span>
-              <span className="text-white">${formatCurrency(subtotal)}</span>
+              <span className="text-white">{formatCurrency(subtotal)}</span>
             </div>
-
-            {savings > 0 && (
-              <dl className="flex items-center justify-between gap-4">
-                <dt>Savings</dt>
-                <dd className="text-base font-medium text-rose-500">-${formatCurrency(savings)}</dd>
-              </dl>
-            )}
           </div>
 
           {/* Total Price */}
           <div className="flex items-center justify-between py-3">
             <span>Total</span>
-            <span className="text-emerald-400">${formatCurrency(total)}</span>
+            <span className="text-emerald-400">{formatCurrency(total)}</span>
           </div>
         </div>
 
@@ -49,6 +49,7 @@ const OrderSummary = () => {
             className="py-3 px-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold rounded-lg shadow-lg hover:from-green-600 hover:to-emerald-700 transition-all duration-300"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
+            onClick={handleCheckOut}
           >
             Proceed to Checkout
           </motion.button>
