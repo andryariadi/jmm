@@ -23,8 +23,6 @@ const Navbar = () => {
     setHoveredIcon(null);
   };
 
-  console.log({ cart }, "<---diNavbar");
-
   return (
     <header className="fixed top-0 left-0 z-50 w-full h-[5rem] flex items-center bg-transparent bg-opacity-90 backdrop-blur-md shadow-lg border-b border-emerald-800">
       <div className="container mx-auto px-20">

@@ -22,8 +22,6 @@ const ButtonCart = ({ product }: { product: ProductProps }) => {
     addToCart(product);
   };
 
-  console.log({ product }, "<----buttonCart");
-
   return (
     <motion.button
       className="w-fit py-3 px-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold rounded-lg shadow-lg hover:from-green-600 hover:to-emerald-700 transition-all duration-300 flex items-center justify-center gap-3"

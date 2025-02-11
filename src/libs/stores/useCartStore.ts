@@ -76,6 +76,41 @@ export const useCartStore = create<CartState>((set, get) => ({
   subtotal: 0,
   order: typeof window !== "undefined" ? loadOrderFromLocalStorage() : [], // Load order from localStorage only on the client
 
+  addToCart: (product) => {
+    set((prevState) => {
+      const existingItem = prevState.cart.find((item) => item.id === product.id);
+
+      const newCart = existingItem
+        ? prevState.cart.map((item) => (item.id === product.id ? { ...item, quantity: item.quantity + 1, stock: item.stock - 1 } : item))
+        : [...prevState.cart, { ...product, quantity: 1, stock: product.stock - 1 }];
+
+      saveCartToLocalStorage(newCart);
+      toast.success("Product added to cart successfully!", {
+        style: toastStyle,
+      });
+
+      return { cart: newCart };
+    });
+
+    get().calculateTotals();
+  },
+
+  updateQuantity: (productId, quantity, stock) => {
+    set((prevState) => {
+      const newCart = prevState.cart.map((item) => (item.id === productId ? { ...item, quantity, stock } : item));
+
+      if (quantity === 0) {
+        get().removeFromCart(productId);
+        return prevState;
+      }
+
+      saveCartToLocalStorage(newCart);
+      return { cart: newCart };
+    });
+
+    get().calculateTotals();
+  },
+
   checkout: async () => {
     try {
       const { cart } = get();
@@ -90,8 +125,6 @@ export const useCartStore = create<CartState>((set, get) => ({
       };
 
       const res = await axios.post("https://fe-test-api.jmm88.com/api/orders", payload);
-
-      console.log({ res }, "<----checkoutStore");
 
       if (res.data.status === 200) {
         toast.success(res.data.message, {
@@ -112,48 +145,10 @@ export const useCartStore = create<CartState>((set, get) => ({
     }
   },
 
-  addToCart: (product) => {
-    set((prevState) => {
-      const existingItem = prevState.cart.find((item) => item.id === product.id);
-
-      const newCart = existingItem
-        ? prevState.cart.map((item) => (item.id === product.id ? { ...item, quantity: item.quantity + 1, stock: item.stock - 1 } : item))
-        : [...prevState.cart, { ...product, quantity: 1, stock: product.stock - 1 }];
-
-      saveCartToLocalStorage(newCart); // Save updated cart to localStorage
-
-      toast.success("Product added to cart successfully!", {
-        style: toastStyle,
-      });
-
-      return { cart: newCart };
-    });
-
-    get().calculateTotals();
-  },
-
-  updateQuantity: (productId, quantity, stock) => {
-    set((prevState) => {
-      console.log({ quantity, stock }, "<-----updateQuantity");
-
-      const newCart = prevState.cart.map((item) => (item.id === productId ? { ...item, quantity, stock } : item));
-
-      if (quantity === 0) {
-        get().removeFromCart(productId);
-        return prevState;
-      }
-
-      saveCartToLocalStorage(newCart); // Save updated cart to localStorage
-      return { cart: newCart };
-    });
-
-    get().calculateTotals();
-  },
-
   removeFromCart: (productId) => {
     set((prevState) => {
       const newCart = prevState.cart.filter((item) => item.id !== productId);
-      saveCartToLocalStorage(newCart); // Save updated cart to localStorage
+      saveCartToLocalStorage(newCart);
       return { cart: newCart };
     });
 
@@ -175,6 +170,6 @@ export const useCartStore = create<CartState>((set, get) => ({
 
   clearCart: () => {
     set({ cart: [], total: 0, subtotal: 0 });
-    saveCartToLocalStorage([]); // Clear cart in localStorage
+    saveCartToLocalStorage([]);
   },
 }));

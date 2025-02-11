@@ -10,7 +10,7 @@ const ProductDetailPage = async ({ params }: { params: Promise<{ productId?: str
   console.log({ productId, product }, "<---productDetailPage");
 
   return (
-    <div className="b-rose-600 relative min-h-screen pt-[5rem] flex items-center justify-center overflow-hidden">
+    <div className="relative min-h-screen pt-[5rem] flex items-center justify-center overflow-hidden">
       {/* Floating Shape */}
       <FloatingShape color="bg-green-500" size="size-64" top="-5%" left="10%" delay={0} />
       <FloatingShape color="bg-emerald-500" size="size-48" top="70%" left="80%" delay={5} />

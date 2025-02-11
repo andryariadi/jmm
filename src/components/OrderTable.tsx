@@ -16,8 +16,6 @@ const OrderTable = () => {
 
   if (!data) return <span>Loading...</span>;
 
-  console.log({ order, data }, "<----orderTable");
-
   return (
     <div className="flex flex-col gap-10">
       {/* Title */}

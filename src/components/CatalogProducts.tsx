@@ -1,6 +1,8 @@
 import { getProducts } from "@/libs/actions";
 import Search from "./Search";
 import ProductLists from "./ProductLists";
+import { Suspense } from "react";
+import Loading from "./Loader";
 
 const CatalogProducts = async ({ query }: { query?: string }) => {
   const { data: products } = await getProducts({ query });
@@ -14,12 +16,10 @@ const CatalogProducts = async ({ query }: { query?: string }) => {
     );
   }
 
-  // console.log({ products }, "<---catalogProducts");
-
   return (
-    <div className="b-violet-600 w-full space-y-4">
+    <div className="w-full space-y-4">
       {/* Search */}
-      <div className="b-amber-500 flex flex-col gap-y-3 justify-center">
+      <div className="flex flex-col gap-y-3 justify-center">
         <Search query={query} />
 
         {/* Title */}
@@ -29,7 +29,9 @@ const CatalogProducts = async ({ query }: { query?: string }) => {
       </div>
 
       {/* Products List */}
-      <ProductLists products={products} />
+      <Suspense fallback={<Loading />}>
+        <ProductLists products={products} />
+      </Suspense>
     </div>
   );
 };

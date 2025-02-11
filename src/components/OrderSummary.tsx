@@ -18,10 +18,8 @@ const OrderSummary = () => {
     router.push("/order");
   };
 
-  console.log({ total, subtotal }, "<---orderSummary");
-
   return (
-    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="b-green-800 space-y-5 w-full max-w-md">
+    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="space-y-5 w-full max-w-md">
       {/* Order Summary */}
       <div className="p-5 bg-gray-800 border border-gray-700 rounded-2xl shadow-xl space-y-5">
         <div>

@@ -1,3 +1,4 @@
+import FloatingShape from "@/components/FloatingShape";
 import { getOrderById } from "@/libs/actions";
 import { formatCurrency } from "@/libs/utility";
 import Image from "next/image";
@@ -24,22 +25,25 @@ const OrderDetailPage = async ({ params }: { params: Promise<{ orderId?: string 
 
   const { data: order } = await getOrderById({ orderId });
 
-  console.log({ order }, "<---orderDetailPage");
-
   return (
-    <div className="-sky-600 relative min-h-screen flex items-center justify-center py-5 pt-24">
-      <div className="-violet-500 w-full max-w-5xl space-y-10">
+    <div className="relative min-h-screen flex items-center justify-center py-5 pt-24 overflow-hidden">
+      {/* Floating Shape */}
+      <FloatingShape color="bg-green-500" size="size-64" top="-5%" left="10%" delay={0} />
+      <FloatingShape color="bg-emerald-500" size="size-48" top="70%" left="80%" delay={5} />
+      <FloatingShape color="bg-lime-500" size="size-32" top="40%" left="-10%" delay={2} />
+
+      <div className="w-full max-w-5xl space-y-10">
         {order.items.map((item: OrderItem) => (
           <div key={item.product_id} className="b-rose-500 flex items-center gap-5">
             {/* Image Product */}
-            <div className="b-amber-500 w-1/2 p-2 rounded-md border border-emerald-800">
+            <div className="w-1/2 p-2 rounded-md border border-emerald-800">
               <div className="relative w-full min-h-[18.5rem] rounded-md overflow-hidden">
                 <Image src={item.product.image} alt={item.product.name} fill className="object-cover rounded-md hover:scale-110 transition-all duration-300" />
               </div>
             </div>
 
             {/* Product Info */}
-            <div className="b-pink-600 w-1/2 space-y-10">
+            <div className="w-1/2 space-y-10">
               {/* Title */}
               <div className="space-y-7 border-b border-emerald-800 pb-5">
                 <div className="b-fuchsia-500 flex items-center justify-between">
@@ -51,7 +55,7 @@ const OrderDetailPage = async ({ params }: { params: Promise<{ orderId?: string 
               </div>
 
               {/* Price & Stock */}
-              <div className="b-rose-500 flex flex-col gap-3 border-b border-emerald-800 pb-5">
+              <div className="flex flex-col gap-3 border-b border-emerald-800 pb-5">
                 <span className="text-2xl text-sky-500 font-bold">{formatCurrency(item.product.price)}</span>
 
                 <div className="flex items-center gap-1">

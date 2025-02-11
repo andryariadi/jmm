@@ -36,19 +36,17 @@ const ProductDetail = ({ product }: { product: ProductProps }) => {
     }
   };
 
-  console.log({ cart, product, productStorage }, "<---diproductDetail");
-
   return (
-    <div className="b-violet-500 w-full max-w-5xl flex items-center gap-5">
+    <div className="w-full max-w-5xl flex items-center gap-5">
       {/* Image Product */}
-      <div className="b-amber-500 w-1/2 p-2 rounded-md border border-emerald-800">
+      <div className="w-1/2 p-2 rounded-md border border-emerald-800">
         <div className="relative w-full min-h-[28rem] rounded-md overflow-hidden">
           <Image src={productData?.image} alt={productData?.name} fill className="object-cover rounded-md hover:scale-110 transition-all duration-300" />
         </div>
       </div>
 
       {/* Info Product */}
-      <div className="b-pink-600 w-1/2 min-h-[28rem] space-y-10">
+      <div className="w-1/2 min-h-[28rem] space-y-10">
         {/* Title */}
         <div className="space-y-7 border-b border-emerald-800 pb-5">
           <div className="b-fuchsia-500 flex items-center justify-between">
@@ -60,7 +58,7 @@ const ProductDetail = ({ product }: { product: ProductProps }) => {
         </div>
 
         {/* Price & Stock */}
-        <div className="b-rose-500 flex flex-col gap-3 border-b border-emerald-800 pb-5">
+        <div className="flex flex-col gap-3 border-b border-emerald-800 pb-5">
           <span className="text-2xl text-sky-500 font-bold">{formatCurrency(productData?.price)}</span>
 
           <div className="flex items-center gap-1">
@@ -70,7 +68,7 @@ const ProductDetail = ({ product }: { product: ProductProps }) => {
         </div>
 
         {/* Button */}
-        <div className="b-sky-500 flex items-center gap-10 border-b border-emerald-800 pb-5">
+        <div className="flex items-center gap-10 border-b border-emerald-800 pb-5">
           <div className="w-fit p-1 border border-gray-700 rounded-2xl shadow-xl flex items-center gap-2">
             <button onClick={handleDecreaseQuantity} disabled={productData.quantity === 0} className={`${productData.quantity === 0 ? "text-gray-500 cursor-not-allowed" : "text-white"}`}>
               <HiMiniMinusSmall size={23} />
