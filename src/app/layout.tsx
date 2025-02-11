@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Outfit } from "next/font/google";
 import "./globals.css";
 import QueryProvider from "@/components/QueryProvider";
+import { Toaster } from "react-hot-toast";
 
 const outfit = Outfit({ subsets: ["latin"] });
 
@@ -21,7 +22,10 @@ export default function RootLayout({
   return (
     <QueryProvider>
       <html lang="en">
-        <body className={`${outfit.className} antialiased`}>{children}</body>
+        <body className={`${outfit.className} antialiased`}>
+          {children}
+          <Toaster position="top-right" />
+        </body>
       </html>
     </QueryProvider>
   );

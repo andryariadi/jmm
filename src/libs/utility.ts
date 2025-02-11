@@ -5,3 +5,9 @@ export const formatCurrency = (price: number) => {
     minimumFractionDigits: 0,
   }).format(price);
 };
+
+export const toastStyle = {
+  borderRadius: "10px",
+  background: "#333",
+  color: "#fff",
+};

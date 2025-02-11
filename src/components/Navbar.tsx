@@ -1,5 +1,6 @@
 "use client";
 
+import { useCartStore } from "@/libs/stores/useCartStore";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -10,6 +11,8 @@ import { RiLogoutCircleLine, RiLogoutCircleRLine } from "react-icons/ri";
 const Navbar = () => {
   const [hoveredIcon, setHoveredIcon] = useState<string | null>(null);
 
+  const { cart } = useCartStore();
+
   const user = true;
 
   const handleMouseEnter = (icon: string) => {
@@ -19,6 +22,8 @@ const Navbar = () => {
   const handleMouseLeave = () => {
     setHoveredIcon(null);
   };
+
+  console.log({ cart }, "<---diNavbar");
 
   return (
     <header className="fixed top-0 left-0 z-50 w-full h-[5rem] flex items-center bg-transparent bg-opacity-90 backdrop-blur-md shadow-lg border-b border-emerald-800">
@@ -42,15 +47,15 @@ const Navbar = () => {
             {/* Shopping Cart Icon with Tooltip */}
             {user && (
               <div className="relative flex items-center" onMouseEnter={() => handleMouseEnter("cart")} onMouseLeave={handleMouseLeave}>
-                <Link href="/cart" className="hover:scale-110 transition-all duration-300">
+                <Link href="/product/cart" className="hover:scale-110 transition-all duration-300">
                   <PiShoppingCartSimple size={26} />
                 </Link>
                 {hoveredIcon === "cart" && <div className="absolute top-8 left-1/2 transform -translate-x-1/2 bg-emerald-700 text-white text-sm rounded px-2 py-1 shadow-lg z-10">Cart</div>}
-                {/* {cart.length > 0 && (
+                {cart.length > 0 && (
                   <div className="absolute -top-2 -right-2 bg-rose-600 size-5 flex items-center justify-center rounded-full">
                     <span className="text-sm text-white">{cart.length}</span>
                   </div>
-                )} */}
+                )}
               </div>
             )}
 
