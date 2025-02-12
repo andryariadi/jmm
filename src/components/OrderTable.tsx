@@ -17,6 +17,7 @@ const generateRandomColor = () => {
 
 const OrderTable = () => {
   const { order } = useCartStore();
+
   const [colorMap, setColorMap] = useState<{ [key: string]: string }>({});
 
   useEffect(() => {
@@ -59,28 +60,30 @@ const OrderTable = () => {
                 <th className="px-6 py-3 text-xs font-medium text-gray-300 uppercase tracking-wider">Total Price</th>
               </tr>
             </thead>
-            <tbody className="bg-gray-800 divide-y divide-gray-700">
-              {data.map((item) => (
-                <tr key={`${item.orderId}-${item.product_id}`}>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <Link href={`/order/${item.orderId}`} style={{ color: colorMap[item.orderId] }}>
-                      {item.orderId}
-                    </Link>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <p className="text-center">{item.product_id}</p>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <p className="text-center">{item.quantity}</p>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <p className="text-center">{item.totalItem}</p>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <p className="text-center">{formatCurrency(item.totalPrice)}</p>
-                  </td>
-                </tr>
-              ))}
+            <tbody className="bg-gray-950 divide-y divide-gray-700">
+              {data.map((item) => {
+                return (
+                  <tr key={`${item.orderId}-${item.product_id}`}>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <Link href={`/order/${item.orderId}`} style={{ color: colorMap[item.orderId] }}>
+                        {item.orderId}
+                      </Link>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <p className="text-center">{item.product_id}</p>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <p className="text-center">{item.quantity}</p>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <p className="text-center">{item.totalItem}</p>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <p className="text-center">{formatCurrency(item.quantity * item.price)}</p>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

@@ -18,12 +18,17 @@ type ProductProps = {
 };
 
 const ProductCard = ({ product }: { product: ProductProps }) => {
-  const { addToCart } = useCartStore();
+  const { addToCart, cart } = useCartStore();
   const category = product.category;
   const customPropertyName = `--is${category.charAt(0).toUpperCase() + category.slice(1)}`;
 
+  const productStorage = cart.find((item) => item.id === product?.id);
+  const productData = productStorage ? productStorage : product;
+
   const handleAddToCart = () => {
-    addToCart(product);
+    if (productData.stock === 0) return;
+
+    addToCart(productData);
   };
 
   return (
@@ -49,7 +54,7 @@ const ProductCard = ({ product }: { product: ProductProps }) => {
       </div>
 
       <div className="more bg-bgrd flex items-center justify-between px-5 py-5 rounded-b-[30px]">
-        <button className="cart flex items-center gap-2" onClick={handleAddToCart}>
+        <button className={"cart flex items-center gap-2" + (productData.stock === 0 ? " opacity-50 cursor-not-allowed" : "")} disabled={productData.stock === 0} onClick={handleAddToCart}>
           <div className="bg-zinc-900 size-10 flex items-center justify-center rounded-full border border-gray-700 hover:border-logo transition-all duration-300">
             <IoIosCart size={24} className="hover:text-logo hover:scale-110 transition-all duration-300" />
           </div>

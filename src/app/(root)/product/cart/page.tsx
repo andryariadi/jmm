@@ -12,7 +12,7 @@ const CartPage = () => {
   const { cart } = useCartStore();
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center py-5">
+    <div className="relative min-h-screen flex items-center justify-center py-5 pt-24 overflow-hidden">
       <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5, delay: 0.2 }} className="b-rose-600 w-full max-w-6xl mx-auto flex flex-col">
         {cart.length === 0 ? (
           <EmptyCart />

@@ -25,8 +25,6 @@ const OrderDetailPage = async ({ params }: { params: Promise<{ orderId?: string 
 
   const { data: order } = await getOrderById({ orderId });
 
-  console.log({ order }, "<---orderDetailPage");
-
   return (
     <div className="relative min-h-screen flex items-center justify-center py-5 pt-24 overflow-hidden">
       {/* Floating Shape */}

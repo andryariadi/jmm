@@ -7,8 +7,6 @@ const ProductDetailPage = async ({ params }: { params: Promise<{ productId?: str
 
   const { data: product } = await getProductById({ productId });
 
-  console.log({ productId, product }, "<---productDetailPage");
-
   return (
     <div className="relative min-h-screen pt-[5rem] flex items-center justify-center overflow-hidden">
       {/* Floating Shape */}

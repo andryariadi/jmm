@@ -22,8 +22,10 @@ const CartItem = ({ item }: { item: ItemProps }) => {
   const { removeFromCart, updateQuantity } = useCartStore();
 
   const handleDecreaseQuantity = () => {
-    if (item.quantity > 0) {
+    if (item.quantity > 1) {
       updateQuantity(item.id, item.quantity - 1, item.stock + 1);
+    } else {
+      removeFromCart(item.id);
     }
   };
 

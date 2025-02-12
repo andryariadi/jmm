@@ -51,7 +51,7 @@ const loadCartFromLocalStorage = (): Product[] => {
     const cart = localStorage.getItem("cart");
     return cart ? JSON.parse(cart) : [];
   }
-  return []; // Return empty array if running on the server
+  return [];
 };
 
 // Helper function to save order to localStorage
@@ -90,6 +90,7 @@ export const useCartStore = create<CartState>((set, get) => ({
         items: cart.map((item) => ({
           product_id: item.id,
           quantity: item.quantity,
+          price: item.price,
         })),
         total_item: cart.length,
         total_price: cart.reduce((total, item) => total + item.price * item.quantity, 0),
@@ -157,7 +158,9 @@ export const useCartStore = create<CartState>((set, get) => ({
   removeFromCart: (productId) => {
     set((prevState) => {
       const newCart = prevState.cart.filter((item) => item.id !== productId);
+
       saveCartToLocalStorage(newCart);
+
       return { cart: newCart };
     });
 

@@ -19,14 +19,16 @@ type ProductProps = {
 };
 
 const ProductDetail = ({ product }: { product: ProductProps }) => {
-  const { cart, updateQuantity } = useCartStore();
+  const { cart, updateQuantity, removeFromCart } = useCartStore();
 
   const productStorage = cart.find((item) => item.id === product?.id);
   const productData = productStorage ? productStorage : product;
 
   const handleDecreaseQuantity = () => {
-    if (productData.quantity > 0) {
+    if (productData.quantity > 1) {
       updateQuantity(productData.id, productData.quantity - 1, productData.stock + 1);
+    } else {
+      removeFromCart(productData.id);
     }
   };
 
@@ -78,7 +80,7 @@ const ProductDetail = ({ product }: { product: ProductProps }) => {
 
             <span className="text-sm">{productData.quantity || 0}</span>
 
-            <button onClick={handleIncreaseQuantity} disabled={productData.stock === 0} className={`${productData.stock === 0 ? "text-gray-500 cursor-not-allowed" : "text-white"}`}>
+            <button onClick={handleIncreaseQuantity} disabled={productData.stock === 0 || isQuantityZeroOrUndefined} className={`${productData.stock === 0 || isQuantityZeroOrUndefined ? "text-gray-500 cursor-not-allowed" : "text-white"}`}>
               <BsPlus size={22} />
             </button>
           </div>
