@@ -22,12 +22,17 @@ const ButtonCart = ({ product }: { product: ProductProps }) => {
     addToCart(product);
   };
 
+  console.log({ product }, "<----btnCart");
+
   return (
     <motion.button
-      className="w-fit py-3 px-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold rounded-lg shadow-lg hover:from-green-600 hover:to-emerald-700 transition-all duration-300 flex items-center justify-center gap-3"
+      className={`w-fit py-3 px-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold rounded-lg shadow-lg hover:from-green-600 hover:to-emerald-700 transition-all duration-300 flex items-center justify-center gap-3 ${
+        product.stock === 0 && "opacity-50 cursor-not-allowed"
+      }`}
       whileHover={{ scale: 1.01 }}
       whileTap={{ scale: 0.95 }}
       onClick={handleAddToCart}
+      disabled={product.stock === 0}
     >
       <IoIosCart size={24} />
       <span>Add to Cart</span>

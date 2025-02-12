@@ -1,18 +1,42 @@
 "use client";
 
 import { useCartStore } from "@/libs/stores/useCartStore";
+import { formatCurrency } from "@/libs/utility";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
-type OrderItem = {
-  product_id: number;
-  quantity: number;
+const generateRandomColor = () => {
+  const letters = "0123456789ABCDEF";
+  let color = "#";
+  for (let i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
 };
 
 const OrderTable = () => {
   const { order } = useCartStore();
+  const [colorMap, setColorMap] = useState<{ [key: string]: string }>({});
 
-  const data = order.items;
+  useEffect(() => {
+    const newColorMap: { [key: string]: string } = {};
+    order.forEach((item) => {
+      if (!colorMap[item.order_id]) {
+        newColorMap[item.order_id] = generateRandomColor();
+      }
+    });
+    setColorMap((prev) => ({ ...prev, ...newColorMap }));
+  }, [order]);
+
+  const data = order.flatMap((item) =>
+    item.items.map((orderItem) => ({
+      ...orderItem,
+      totalPrice: item.total_price,
+      totalItem: item.total_item,
+      orderId: item.order_id,
+    }))
+  );
 
   if (!data) return <span>Loading...</span>;
 
@@ -31,26 +55,30 @@ const OrderTable = () => {
                 <th className="px-6 py-3 text-xs font-medium text-gray-300 uppercase tracking-wider">Order ID</th>
                 <th className="px-6 py-3 text-xs font-medium text-gray-300 uppercase tracking-wider">Product ID</th>
                 <th className="px-6 py-3 text-xs font-medium text-gray-300 uppercase tracking-wider">Quantity</th>
+                <th className="px-6 py-3 text-xs font-medium text-gray-300 uppercase tracking-wider">Total Item</th>
                 <th className="px-6 py-3 text-xs font-medium text-gray-300 uppercase tracking-wider">Total Price</th>
               </tr>
             </thead>
             <tbody className="bg-gray-800 divide-y divide-gray-700">
-              {data.map((item: OrderItem, index: number) => (
-                <tr key={item.product_id}>
+              {data.map((item) => (
+                <tr key={`${item.orderId}-${item.product_id}`}>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <Link href={`/order/${order.order_id}`}>{order.order_id}</Link>
+                    <Link href={`/order/${item.orderId}`} style={{ color: colorMap[item.orderId] }}>
+                      {item.orderId}
+                    </Link>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <p>{item.product_id}</p>
+                    <p className="text-center">{item.product_id}</p>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <p>{item.quantity}</p>
+                    <p className="text-center">{item.quantity}</p>
                   </td>
-                  {index % 2 === 0 && (
-                    <td className="px-6 py-4 whitespace-nowrap" rowSpan={2}>
-                      <p>{order.total_price}</p>
-                    </td>
-                  )}
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <p className="text-center">{item.totalItem}</p>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <p className="text-center">{formatCurrency(item.totalPrice)}</p>
+                  </td>
                 </tr>
               ))}
             </tbody>

@@ -65,9 +65,15 @@ const saveOrderToLocalStorage = (order: OrderData[]) => {
 const loadOrderFromLocalStorage = (): OrderData[] => {
   if (typeof window !== "undefined") {
     const order = localStorage.getItem("order");
-    return order ? JSON.parse(order) : [];
+    try {
+      const parsedOrder = order ? JSON.parse(order) : [];
+      return Array.isArray(parsedOrder) ? parsedOrder : [];
+    } catch (error) {
+      console.error("Failed to parse order from localStorage:", error);
+      return [];
+    }
   }
-  return []; // Return empty array if running on the server
+  return [];
 };
 
 export const useCartStore = create<CartState>((set, get) => ({
@@ -75,6 +81,43 @@ export const useCartStore = create<CartState>((set, get) => ({
   total: 0,
   subtotal: 0,
   order: typeof window !== "undefined" ? loadOrderFromLocalStorage() : [], // Load order from localStorage only on the client
+
+  checkout: async () => {
+    try {
+      const { cart, order } = get();
+
+      const payload = {
+        items: cart.map((item) => ({
+          product_id: item.id,
+          quantity: item.quantity,
+        })),
+        total_item: cart.length,
+        total_price: cart.reduce((total, item) => total + item.price * item.quantity, 0),
+      };
+
+      const res = await axios.post("https://fe-test-api.jmm88.com/api/orders", payload);
+
+      if (res.data.status === 200) {
+        toast.success(res.data.message, {
+          style: toastStyle,
+        });
+
+        const currentOrder = Array.isArray(order) ? order : [];
+        const updatedOrder = [...currentOrder, res.data.data];
+
+        saveOrderToLocalStorage(updatedOrder);
+
+        set({ cart: [], total: 0, subtotal: 0, order: updatedOrder });
+
+        localStorage.removeItem("cart");
+      }
+    } catch (error) {
+      console.error("Checkout failed:", error);
+      toast.error("Checkout failed. Please try again", {
+        style: toastStyle,
+      });
+    }
+  },
 
   addToCart: (product) => {
     set((prevState) => {
@@ -109,40 +152,6 @@ export const useCartStore = create<CartState>((set, get) => ({
     });
 
     get().calculateTotals();
-  },
-
-  checkout: async () => {
-    try {
-      const { cart } = get();
-
-      const payload = {
-        items: cart.map((item) => ({
-          product_id: item.id,
-          quantity: item.quantity,
-        })),
-        total_item: cart.length,
-        total_price: cart.reduce((total, item) => total + item.price * item.quantity, 0),
-      };
-
-      const res = await axios.post("https://fe-test-api.jmm88.com/api/orders", payload);
-
-      if (res.data.status === 200) {
-        toast.success(res.data.message, {
-          style: toastStyle,
-        });
-
-        saveOrderToLocalStorage(res.data.data);
-
-        set({ cart: [], total: 0, subtotal: 0, order: res.data.data });
-
-        localStorage.removeItem("cart");
-      }
-    } catch (error) {
-      console.error("Checkout failed:", error);
-      toast.error("Checkout failed. Please try again", {
-        style: toastStyle,
-      });
-    }
   },
 
   removeFromCart: (productId) => {

@@ -36,6 +36,8 @@ const ProductDetail = ({ product }: { product: ProductProps }) => {
     }
   };
 
+  const isQuantityZeroOrUndefined = !productData.quantity || productData.quantity === 0;
+
   return (
     <div className="w-full max-w-5xl flex items-center gap-5">
       {/* Image Product */}
@@ -70,7 +72,7 @@ const ProductDetail = ({ product }: { product: ProductProps }) => {
         {/* Button */}
         <div className="flex items-center gap-10 border-b border-emerald-800 pb-5">
           <div className="w-fit p-1 border border-gray-700 rounded-2xl shadow-xl flex items-center gap-2">
-            <button onClick={handleDecreaseQuantity} disabled={productData.quantity === 0} className={`${productData.quantity === 0 ? "text-gray-500 cursor-not-allowed" : "text-white"}`}>
+            <button onClick={handleDecreaseQuantity} disabled={isQuantityZeroOrUndefined} className={`${isQuantityZeroOrUndefined ? "text-gray-500 cursor-not-allowed" : "text-white"}`}>
               <HiMiniMinusSmall size={23} />
             </button>
 
